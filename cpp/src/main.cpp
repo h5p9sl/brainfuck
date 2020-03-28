@@ -41,6 +41,7 @@ public:
                 case '[':
                     if (*ptr == 0) {
                         int skip = 0;
+                        i++; // Skip over current char
                         for (; skip != 0 || str[i] != ']'; i++) {
                             if (str[i] == '[') skip++;
                             else if (str[i] == ']') skip--;
