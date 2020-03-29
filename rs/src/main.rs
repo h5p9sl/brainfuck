@@ -24,7 +24,7 @@ fn main() {
 
     let bf_file = argv.nth(1).unwrap();
 
-    let mut bf = BrainFuck::new(30*1000);
+    let mut bf = BrainFuck::new(30*1000, false);
     if let Some(file) = load_file(&bf_file) {
         bf.run(&file);
     } else {

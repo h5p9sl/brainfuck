@@ -4,14 +4,18 @@
 #include <fstream>
 #include <stack>
 
+#define DEBUG_PRINT(x, ...) if (debug) printf(x)
+
 class Brainfuck {
 private:
     unsigned char mem[30000];
     unsigned char* ptr;
     std::stack<int> loops;
+    bool debug;
 public:
-    Brainfuck() :
+    Brainfuck(bool debug) :
         ptr(mem)
+        , debug(debug)
     {}
 
     void parse(const char* str) {
@@ -21,15 +25,19 @@ public:
                     std::cout << (int)(*ptr) << std::endl;
                     break;
                 case '<':
+                    DEBUG_PRINT("<");
                     ptr--;
                     break;
                 case '>':
+                    DEBUG_PRINT(">");
                     ptr++;
                     break;
                 case '+':
+                    DEBUG_PRINT("+");
                     (*ptr)++;
                     break;
                 case '-':
+                    DEBUG_PRINT("-");
                     (*ptr)--;
                     break;
                 case ',':
@@ -39,21 +47,28 @@ public:
                     putchar(*ptr);
                     break;
                 case '[':
+                    DEBUG_PRINT("[");
                     if (*ptr == 0) {
+                        DEBUG_PRINT("Skipping over loop\n");
                         int skip = 0;
                         i++; // Skip over current char
                         for (; skip != 0 || str[i] != ']'; i++) {
+                            DEBUG_PRINT("Skip: %i, %c, %i\n", i, str[i], skip);
                             if (str[i] == '[') skip++;
                             else if (str[i] == ']') skip--;
                         }
                     } else {
+                        DEBUG_PRINT("Entering loop");
                         loops.push(i);
                     }
                     break;
                 case ']':
+                    DEBUG_PRINT("]");
                     if (*ptr != 0) {
+                        DEBUG_PRINT("Going to start of loop\n");
                         i = loops.top();
                     } else {
+                        DEBUG_PRINT("Exiting loop\n");
                         loops.pop();
                     }
                     break;
@@ -74,7 +89,7 @@ std::string read_file(char* file_name) {
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
-        Brainfuck fuck;
+        Brainfuck fuck(false);
         std::string str = read_file(argv[1]);
         fuck.parse(str.c_str());
     } else {
